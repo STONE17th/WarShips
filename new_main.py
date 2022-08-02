@@ -34,11 +34,11 @@ class Cell(tk.Button):
                 nf.receive_fire(sb_client_sock, btn_find, game)
 
             case 1:
-                my_shoot_list[self.id] = True
+                # my_shoot_list[self.id] = True
                 self['image'] = fire
                 self['relief'] = tk.SUNKEN
             case 2:
-                my_shoot_list[self.id] = True
+                #my_shoot_list[self.id] = True
                 self['image'] = kill
                 self['relief'] = tk.SUNKEN
                 check_kill(my_shoot[1], my_shoot[2], my_shoot[3], my_shoot[4], enemy_cell)
@@ -123,8 +123,12 @@ def ready_btn():
         btn_connect['text'] = 'READY!'
 
 def find_btn():
-    nf.find_player(sb_client_sock, btn_find, game)
-    btn_find['command'] = lambda: nf.receive_fire(sb_client_sock, btn_find, game)
+    print(game.id)
+    if game.id == None:
+        nf.find_player(sb_client_sock, btn_find, game)
+    else:
+        nf.receive_fire(sb_client_sock, btn_find, game)
+    # btn_find['command'] = lambda: nf.receive_fire(sb_client_sock, btn_find, game)
 
 
 def random_btn():
