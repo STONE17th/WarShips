@@ -1,17 +1,18 @@
 import random
+from tkinter import messagebox
 
 
-def random_ship_position(player_ships, id_dict):
+
+def random_ship_position(player_ships, dictionary):
 
     ships_position = []
     ships_position.clear()
     buffer_position = []
     buffer_position.clear()
-    id_dic = id_dict
     counter = 0
 
     def xy_to_id(ship):
-        k = [k for k, v in id_dic.items() if v == (ship.y, ship.x)]
+        k = [k for k, v in dictionary.items() if v == (ship.y, ship.x)]
         if not k == []: return int(k[0])
         else: return 0
 
@@ -63,12 +64,15 @@ def random_ship_position(player_ships, id_dict):
         return set(temp_buffer)
 
     def create_ship(ship):
-        if random.randint(0, 1):
-            ship_rotate_random(ship)
         ship.x = random.randint(1, 11)
         ship.y = random.randint(1, 11)
-        if ship.size + ship.x < 12 and ship.size + ship.y < 12:
-            return True
+        if random.randint(0, 1):
+            ship_rotate_random(ship)
+            if ship.x < 11 and ship.size + ship.y < 11:
+                return True
+        else:
+            if ship.x + ship.x < 11 and ship.y < 11:
+                return True
 
     def comparison(ship, list):
         for cell in ship:
@@ -90,7 +94,7 @@ def random_ship_position(player_ships, id_dict):
                         break
             counter += 1
     if len(ships_position) == 20: return ships_position
-    else: random_ship_position(player_ships, id_dic)
+    else: random_ship_position(player_ships)
 
 
 def ship_rotate_random(ship):
@@ -99,3 +103,17 @@ def ship_rotate_random(ship):
     wid_h = ship.place_info().get('height')
     ship.place(width= wid_h)
     ship.place(height= wid_w)
+
+def out_of_shipyard(ship_position):
+    for ship in ship_position:
+        if ship.direct:
+            if ship.x > 11 or ship.y + ship.size > 11:
+                print(ship.x, ship.y, ship.size)
+                messagebox.showinfo('Капитан!', 'Капитан, мы не можем отправить расположение кораблей! Не все корабли в зоне действий!')
+                return False
+        else:
+            if ship.x + ship.size > 11 or ship.y > 11:
+                print(ship.x, ship.y, ship.size)
+                messagebox.showinfo('Капитан!', 'Капитан, мы не можем отправить расположение кораблей! Не все корабли в зоне действий!')
+                return False
+    return True
