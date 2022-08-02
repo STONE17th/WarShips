@@ -92,14 +92,10 @@ def disconnect_sock(sock: socket) -> bool:
 
 def receive_fire(sock, view_obj, gameobj):
     def listen_data(sock, view_obj, gameobj):
-        # print('im a thread')
-        # print(gameobj.enemy_round)
-        # print(gameobj.listen_sock)
         gameobj.listen_sock = True
         view_obj['text'] = 'Ход врага'
         data = sock.recv(1024)
-        # print(data)
-
+        print(data)
         while data[1] == 1 or data[1] == 2:
             data = sock.recv(1024)
             print(data)
@@ -113,10 +109,12 @@ def receive_fire(sock, view_obj, gameobj):
         else:
             view_obj['text'] = 'Твой ход'
             gameobj.enemy_round = False
+        print('receive_fire finished')
+
     if not gameobj.listen_sock:
         thread = threading.Thread(target=listen_data, name='listen_data', args=(sock, view_obj, gameobj))
         thread.start()
-        print('Thread started')
+        print('Thread receive fire started')
     else:
         pass
 
@@ -126,7 +124,8 @@ def wait_game(sock, view_obj, gameobj):
         gameobj.listen_sock = True
         view_obj['text'] = 'Поиск игры'
         data = sock.recv(1024)
-        # print(data)
+        gameobj.listen_sock = False
+        print(data)
         if data[0] == 7:
             gameobj.id = data[1]
             view_obj['text'] = 'Игра началась'
@@ -134,9 +133,14 @@ def wait_game(sock, view_obj, gameobj):
             if gameobj.enemy_round:
                 # receive_fire(sock, view_obj, gameobj)
                 view_obj['text'] = 'Ход врага!'
+                receive_fire(sock, view_obj, gameobj)
             else: view_obj['text'] = 'Твой ход!'
+            print('wait_game finished')
+            
+            
     if not gameobj.listen_sock:
         thread = threading.Thread(target=listen_data, name='listen_data', args=(sock, view_obj, gameobj))
         thread.start()
+        print('Thread wait game started')
     else:
         pass
