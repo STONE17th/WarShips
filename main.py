@@ -40,6 +40,9 @@ class Cell(tk.Button):
             case _:
                 pass
 
+    def shoot_cell(self):
+        self['image'] = miss
+
     def __repr__(self):
         return 'Cell'
 
@@ -144,9 +147,9 @@ def find_btn():
     print(player_ships[4].cell_buffer())
     print(game.id)
     if game.id == 0:
-        nf.find_player(sb_client_sock, btn_connect, game)
+        nf.find_player(sb_client_sock, btn_connect, game, my_cell)
     else:
-        nf.receive_fire(sb_client_sock, btn_connect, game)
+        nf.receive_fire(sb_client_sock, btn_connect, game, my_cell)
     btn_connect['state'] = tk.DISABLED
 
 def random_btn():
@@ -185,7 +188,9 @@ def place_field(field, n):
             field[i].place(x=x, y=y, width=30, height=30)
             field[i]['command'] = field[i].open_cell
             index += 1
+    print(dict_cell_id)
     return cell_xy
+
 
 def shipyard():
     player_ships = []
