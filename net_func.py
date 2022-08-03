@@ -92,9 +92,9 @@ def disconnect_sock(sock: socket, id) -> bool:
         return False
 
 
-def receive_fire(sock, view_obj, gameobj):
+def receive_fire(sock, view_obj, gameobj, cells_obj):
 
-    def listen_data(sock, view_obj, gameobj):
+    def listen_data(sock, view_obj, gameobj, cells_obj):
         gameobj.listen_sock = True
         view_obj['text'] = 'Ход врага'
         
@@ -104,6 +104,9 @@ def receive_fire(sock, view_obj, gameobj):
             gameobj.listen_sock = False
             if data[0] == 8:
                 gameobj.enemy_shoot_list.append((data[2],data[3]))
+                for elem in cells_obj:
+                    if (data[2], data[3]) == (elem.x, elem.y):
+                        elem.shoot_cell()
                 if data[1] == 0:
                     gameobj.enemy_round = False                    
                     view_obj['text'] = 'Твой ход'
@@ -118,15 +121,15 @@ def receive_fire(sock, view_obj, gameobj):
         print('receive_fire finished')
 
     if not gameobj.listen_sock:
-        thread = threading.Thread(target=listen_data, name='listen_data', args=(sock, view_obj, gameobj))
+        thread = threading.Thread(target=listen_data, name='listen_data', args=(sock, view_obj, gameobj, cells_obj))
         thread.start()
         print('Thread receive fire started')
     else:
         pass
 
 
-def wait_game(sock, view_obj, gameobj):
-    def listen_data(sock, view_obj, gameobj):
+def wait_game(sock, view_obj, gameobj, cells_obj):
+    def listen_data(sock, view_obj, gameobj, cells_obj):
         gameobj.listen_sock = True
         view_obj['text'] = 'Поиск игры'
         data = sock.recv(1024)
@@ -139,13 +142,13 @@ def wait_game(sock, view_obj, gameobj):
             if gameobj.enemy_round:
                 # receive_fire(sock, view_obj, gameobj)
                 view_obj['text'] = 'Ход врага!'
-                receive_fire(sock, view_obj, gameobj)
+                receive_fire(sock, view_obj, gameobj, cells_obj)
             else: view_obj['text'] = 'Твой ход!'
             print('wait_game finished')
             
             
     if not gameobj.listen_sock:
-        thread = threading.Thread(target=listen_data, name='listen_data', args=(sock, view_obj, gameobj))
+        thread = threading.Thread(target=listen_data, name='listen_data', args=(sock, view_obj, gameobj, cells_obj))
         thread.start()
         print('Thread wait game started')
     else:
