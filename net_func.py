@@ -43,7 +43,7 @@ def start_game(sock) -> bool:
         return False
 
 
-def find_player(sock, view_obj, gameobj) -> str:
+def find_player(sock, view_obj, gameobj, cells_obj) -> str:
     sock.send(bytes((6,)))
 
     data = sock.recv(1024)
@@ -51,7 +51,7 @@ def find_player(sock, view_obj, gameobj) -> str:
 
     if data[0] == 6:
         if (data[1]) == 0:
-            wait_game(sock, view_obj, gameobj)
+            wait_game(sock, view_obj, gameobj, cells_obj)
 
             return True
         return False
