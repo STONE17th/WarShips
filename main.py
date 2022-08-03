@@ -27,7 +27,7 @@ class Cell(tk.Button):
                 self['image'] = miss
                 self['relief'] = tk.SUNKEN
                 game.enemy_round = True
-                nf.receive_fire(sb_client_sock, btn_connect, game)
+                nf.receive_fire(sb_client_sock, btn_connect, game, my_cell)
             case 1:
                 self['image'] = fire
                 self['relief'] = tk.SUNKEN
