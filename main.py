@@ -43,7 +43,7 @@ class Cell(tk.Button):
     def shoot_cell(self):
         for ship in player_ships:
             for ship_cell in ship.cell_ship():
-                if self.id == ship.cell:
+                if self.id == ship_cell:
                     self['image'] = fire
                 else:
                     self['image'] = miss
