@@ -41,7 +41,12 @@ class Cell(tk.Button):
                 pass
 
     def shoot_cell(self):
-        self['image'] = miss
+        for ship in player_ships:
+            for ship_cell in ship.cell_ship():
+                if self.id == ship.cell:
+                    self['image'] = fire
+                else:
+                    self['image'] = miss
 
     def __repr__(self):
         return 'Cell'
@@ -196,7 +201,7 @@ def draw_ships(player_ships, board):
                 if cell_board.id == cell_ship:
                     cell_board['image'] = player_ship
     for ship in player_ships:
-        ship.destroy()
+        ship.place_forget()
 
 def shipyard():
     player_ships = []
