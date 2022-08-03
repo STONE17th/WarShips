@@ -8,8 +8,8 @@ class Game:
     def __init__(self, enemy_round,listen_sock):
         self.enemy_round = enemy_round
         self.listen_sock = listen_sock
-        self.id = None
-
+        self.id = 0
+        self.enemy_shoot_list = []
 
 class Cell(tk.Button):
     def __init__(self, master, x: int, y: int, id, *args, **kwargs):
@@ -105,12 +105,12 @@ class Ship(tk.Canvas):
 def on_closing():
     if messagebox.askyesno("Уходите?", "Вы хотите нас покинуть?"):
         if sb_client_sock != None:
-            nf.disconnect_sock(sb_client_sock)
+            nf.disconnect_sock(sb_client_sock, game.id)
         main_window.destroy()
 
 def connect_btn():
     global sb_client_sock, player_ships
-    sb_client_sock = nf.connect_to_host('localhost', 9091)
+    sb_client_sock = nf.connect_to_host('glt.ekolenko.ru', 9091)
     if nf.check_connection(sb_client_sock):
         place_field(my_cell, 0)
         player_ships = shipyard()
@@ -143,7 +143,7 @@ def ready_btn():
 def find_btn():
     print(player_ships[4].cell_buffer())
     print(game.id)
-    if game.id == None:
+    if game.id == 0:
         nf.find_player(sb_client_sock, btn_connect, game)
     else:
         nf.receive_fire(sb_client_sock, btn_connect, game)
