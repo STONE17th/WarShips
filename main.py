@@ -118,7 +118,7 @@ def on_closing():
 
 def connect_btn():
     global sb_client_sock, player_ships
-    sb_client_sock = nf.connect_to_host('glt.ekolenko.ru', 9091)
+    sb_client_sock = nf.connect_to_host('localhost', 9091)
     if nf.check_connection(sb_client_sock):
         place_field(my_cell, 0)
         player_ships = shipyard()
@@ -277,7 +277,7 @@ player_ships = []
 
 cell_xy = {}
 dict_cell_id = {}
-game = Game(False,False)
+game = Game(True,False)
 
 sb_client_sock = None
 
