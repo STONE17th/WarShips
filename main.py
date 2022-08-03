@@ -131,6 +131,7 @@ def send_btn():
                 btn_random.destroy()
                 place_field(enemy_cell, 1)
                 send_ship_position(player_ships)
+                draw_ships(player_ships, my_cell)
                 my_ships = []
                 for ship in player_ships:
                     my_ships.append((ship.size, ship.direct, ship.x, ship.y))
@@ -144,8 +145,6 @@ def ready_btn():
         btn_connect['text'] = 'Send Field'
 
 def find_btn():
-    print(player_ships[4].cell_buffer())
-    print(game.id)
     if game.id == 0:
         nf.find_player(sb_client_sock, btn_connect, game, my_cell)
     else:
@@ -155,7 +154,7 @@ def find_btn():
 def random_btn():
     global ships_position
     ships_position = data_ship.random_ship_position(player_ships)
-    print(ships_position)
+
 
 def create_dictionary():
     dict = {}
@@ -188,9 +187,16 @@ def place_field(field, n):
             field[i].place(x=x, y=y, width=30, height=30)
             field[i]['command'] = field[i].open_cell
             index += 1
-    print(dict_cell_id)
     return cell_xy
 
+def draw_ships(player_ships, board):
+    for cell_board in board:
+        for ship in player_ships:
+            for cell_ship in ship.cell_ship():
+                if cell_board.id == cell_ship:
+                    cell_board['image'] = player_ship
+    for ship in player_ships:
+        ship.destroy()
 
 def shipyard():
     player_ships = []
@@ -282,6 +288,7 @@ water = tk.PhotoImage(file="data/water.png")
 cell = tk.PhotoImage(file="data/cell.png")
 fire = tk.PhotoImage(file="data/fire.png")
 kill = tk.PhotoImage(file="data/kill.png")
+player_ship = tk.PhotoImage(file="data/player_ship.png")
 screen_game = tk.PhotoImage(file="data/screen_game.png")
 
 my_cell = create_board(my_cell, cell)
