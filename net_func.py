@@ -28,7 +28,7 @@ def send_fire(sock: socket,id: int, coords: tuple) -> tuple:  # возвраща
         if data[1] == 0:
             return tuple(data[2:])
         else:
-            return False
+            return (4,)
 
 
 def start_game(sock) -> bool:
@@ -77,9 +77,11 @@ def check_connection(sock: socket) -> bool:
         return False
 
 
-def disconnect_sock(sock: socket) -> bool:
+def disconnect_sock(sock: socket, id) -> bool:
     if sock != None:
-        sock.send(bytes((5,)))
+        data_to_send = (bytes((5,id)))
+        print(data_to_send)
+        sock.send(data_to_send)
 
     data = sock.recv(1024)
     print(data)
@@ -91,24 +93,28 @@ def disconnect_sock(sock: socket) -> bool:
 
 
 def receive_fire(sock, view_obj, gameobj):
+
     def listen_data(sock, view_obj, gameobj):
         gameobj.listen_sock = True
         view_obj['text'] = 'Ход врага'
-        data = sock.recv(1024)
-        print(data)
-        while data[1] == 1 or data[1] == 2:
+        
+        while gameobj.enemy_round:
             data = sock.recv(1024)
             print(data)
-            gameobj.enemy_round = True
-            view_obj['text'] = 'Ход врага'
+            gameobj.listen_sock = False
+            if data[0] == 8:
+                gameobj.enemy_shoot_list.append((data[2],data[3]))
+                if data[1] == 0:
+                    gameobj.enemy_round = False                    
+                    view_obj['text'] = 'Твой ход'
+                elif data[1] == 3:
+                    view_obj['text'] = 'Ты проиграл'
+                    gameobj.enemy_round = False
 
-        gameobj.listen_sock = False
-        gameobj.enemy_round = False
-        if data[1] == 3:
-            view_obj['text'] = 'Ты проиграл'
-        else:
-            view_obj['text'] = 'Твой ход'
-            gameobj.enemy_round = False
+            elif data[0] == 9:
+
+                gameobj.enemy_round = False
+                view_obj['text'] = 'Противник сдался'
         print('receive_fire finished')
 
     if not gameobj.listen_sock:
