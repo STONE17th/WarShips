@@ -40,12 +40,17 @@ class Cell(tk.Button):
             case _:
                 pass
 
+
     def shoot_cell(self):
         for ship in player_ships:
             for ship_cell in ship.cell_ship():
                 if self.id == ship_cell:
+                    print('Попал')
+                    self['relief'] = tk.SUNKEN
                     self['image'] = fire
+                    return
                 else:
+                    self['relief'] = tk.SUNKEN
                     self['image'] = miss
 
     def __repr__(self):
@@ -177,7 +182,7 @@ def create_board (board: list, image: any):
         for j in range(12):
             if i == 0 or j == 0 or i == 11 or j == 11: board.append(Cell(main_window, id=0, x=0, y=0))
             else:
-                board.append(Cell(main_window, id=ind, x=i, y=j, image=image))
+                board.append(Cell(main_window, id=ind, x=i, y=j, text=ind))
                 ind += 1
     return board
 
